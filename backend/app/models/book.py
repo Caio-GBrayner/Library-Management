@@ -1,7 +1,7 @@
 from ..extensions import db
 
 class Book(db.Model):
-    __tablename__ = "TB_BOOK"
+    __tablename__ = "tb_book"
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullabel=False)

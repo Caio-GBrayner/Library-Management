@@ -4,7 +4,7 @@ from sqlalchemy import Column, Integer, ForeignKey, DateTime, Enum
 from sqlalchemy.orm import relationship, backref
 
 class Order(db.Model):
-    __tablename__ = "TB_ORDER"
+    __tablename__ = "tb_order"
 
     id = db.Column(db.Integer, primary_key=True)
     moment = db.Column(db.DateTime, nullabel=False, default=datetime.utcnow)
