@@ -2,7 +2,7 @@ import pytest
 from datetime import datetime
 from your_app import create_app
 from ..extensions import db
-from ..models import Order, OrderStatus, User, Payment, Book, Category
+from ..models import Order, OrderStatus, User, Payment, Book, Category, OrderItem
 
 
 @pytest.fixture(scope='session')
@@ -50,11 +50,26 @@ def seed_test_data(session):
     session.add_all([u1, u2])
     session.commit()
 
-    o1 = Order(moment=datetime(2019, 6, 20, 19, 53, 7), status=OrderStatus.PAID.value, user_id=u1.id)
-    o2 = Order(moment=datetime(2019, 7, 21, 3, 42, 10), status=OrderStatus.SHIPPED.value, user_id=u2.id)
-    o3 = Order(moment=datetime(2019, 7, 22, 15, 21, 22), status=OrderStatus.WAITING_PAYMENT.value, user_id=u1.id)
-    session.add_all([o1, o2, o3])
-    session.commit()
+    o1 = Order(
+        moment=datetime(2019, 6, 20, 19, 53, 7),
+        order_status=OrderStatus.PAID.value,
+        client_id=u1.id
+    )
+
+    o2 = Order(
+        moment=datetime(2019, 7, 21, 3, 42, 10),
+        order_status=OrderStatus.SHIPPED.value,
+        client_id=u2.id
+    )
+
+    o3 = Order(
+        moment=datetime(2019, 7, 22, 15, 21, 22),
+        order_status=OrderStatus.WAITING_PAYMENT.value,
+        client_id=u1.id
+    )
+
+    db.session.add_all([o1, o2, o3])
+    db.session.commit()
 
     cat1 = Category(name="Romance")
     cat2 = Category(name="Horror")
@@ -62,13 +77,37 @@ def seed_test_data(session):
     session.add_all([cat1, cat2, cat3])
     session.commit()
 
-    b1 = Book(name="The Lord of the Rings", description="Lorem ipsum dolor sit amet, consectetur.", price=90.5,
-                 image_url="")
-    b2 = Book(name="Vagabond", description="Nulla eu imperdiet purus. Maecenas ante.", price=2190.0, image_url="")
-    b3 = Book(name="Clean code", description="Nam eleifend maximus tortor, at mollis.", price=1250.0, image_url="")
-    b4 = Book(name="Rezendeevil between two worlds", description="Donec aliquet odio ac rhoncus cursus.", price=1200.0, image_url="")
-    b5 = Book(name="Lion King", description="Cras fringilla convallis sem vel faucibus.", price=100.99,
-                 image_url="")
+    b1 = Book(
+        name="The Lord of the Rings",
+        description="Lorem ipsum dolor sit amet, consectetur.",
+        price=90.5,
+        img_url=""
+    )
+    b2 = Book(
+        name="Vagabond",
+        description="Nulla eu imperdiet purus. Maecenas ante.",
+        price=2190.0,
+        img_url=""
+    )
+    b3 = Book(
+        name="Clean code",
+        description="Nam eleifend maximus tortor, at mollis.",
+        price=1250.0,
+        img_url=""
+    )
+    b4 = Book(
+        name="Rezendeevil between two worlds",
+        description="Donec aliquet odio ac rhoncus cursus.",
+        price=1200.0,
+        img_url=""
+    )
+    b5 = Book(
+        name="Lion King",
+        description="Cras fringilla convallis sem vel faucibus.",
+        price=100.99,
+        img_url=""
+    )
+
     b1.categories.append(cat2)
     b2.categories.extend([cat1, cat3])
     b3.categories.append(cat3)
@@ -84,11 +123,19 @@ def seed_test_data(session):
     oi4 = OrderItem(order_id=o3.id, book_id=b5.id, quantity=2, price=b5.price)
     session.add_all([oi1, oi2, oi3, oi4])
 
-    pay1 = Payment(moment=datetime(2019, 6, 20, 21, 53, 7), order_id=o1.id)
-    session.add(pay1)
-    o1.payment = pay1
+    pay1 = Payment(
+        moment=datetime(2019, 6, 20, 21, 53, 7),
+        order_id=o1.id)
 
-    session.commit()
+    try:
+        session.add(pay1)
+        o1.payment = pay1  # Set the bidirectional relationship
+        session.commit()
+        print("Payment created and associated with order successfully!")
+    except Exception as e:
+        session.rollback()
+        print(f"Error creating payment: {str(e)}")
+        raise
 
     return {
         'users': [u1, u2],
