@@ -1,4 +1,5 @@
 from ..extensions import db
+from typing import List
 
 class User(db.Model):
     __tablename__ = "tb_user"
@@ -9,6 +10,16 @@ class User(db.Model):
     email = db.Column(db.String(100))
     phone = db.Column(db.String(20))
     password = db.Column(db.String(100),nullable=False)
+
+    orders: List['Order'] = db.relationship("Order", back_populates="client", lazy=True)
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "email": self.email,
+            "phone": self.phone,
+        }
 
     def __repr__(self):
         return f"<User:{self.name} ({self.identifier}"
