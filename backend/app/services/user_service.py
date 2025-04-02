@@ -1,7 +1,7 @@
 from ..models.user import User
 from ..extensions import db
-from .exceptions import ResourceNotFound, DatabaseError
-
+from .exceptions.database_exception import DatabaseError
+from .exceptions.resource_not_found__exception import  ResourceNotFound
 
 class UserService:
     @staticmethod

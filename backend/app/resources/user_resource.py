@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify, make_response
 from .services.user_service import UserService
-from .exceptions import ResourceNotFound, DatabaseError
+from .e import ResourceNotFound, DatabaseError
 
 user_bp = Blueprint('users', __name__, url_prefix='/users')
 
