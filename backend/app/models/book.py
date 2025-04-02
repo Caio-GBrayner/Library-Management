@@ -7,7 +7,30 @@ class Book(db.Model):
     name = db.Column(db.String(100), nullabel=False)
     description = db.Column(db.String(200))
     tag = db.Column(db.String(100))
-    imgUrl = db.Column(db.String(300))
+    price = db.Column(db.Float, nullable=False)
+    img_url = db.Column(db.String(300))
+
+    categories = db.relationship(
+        "Category",
+        secondary="tb_book_category",
+        back_populates="Book",
+        cascade="all, delete"
+    )
+
+    order_items = db.relationship(
+        "OrderItem",
+        back_populates="Book",
+        cascade="all, delete-orphan"
+    )
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "description": self.description,
+            "price": self.price,
+            "img_url": self.img_url,
+        }
 
     def __repr__(self):
         return f"<Book{self.name}"

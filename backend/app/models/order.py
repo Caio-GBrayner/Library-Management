@@ -1,6 +1,5 @@
 from datetime import datetime
 from ..extensions import db
-from sqlalchemy import Column, Integer, ForeignKey, DateTime, Enum
 from sqlalchemy.orm import relationship, backref
 from .enum.order_status import OrderStatus
 
@@ -14,3 +13,11 @@ class Order(db.Model):
     items = db.relationship("OrderItem", backref="order", lazy=True, cascade="all, delete-orphan")
     order_status = db.Column(db.Integer, nullable=False, default=OrderStatus.PENDING.value)
     payment = db.relationship("Payment", uselist=False, back_populates="order", cascade="all, delete-orphan")
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "moment": self.moment.isoformat() + "Z",  # Formato ISO 8601
+            "client_id": self.client_id,
+            "order_status": self.order_status,
+        }

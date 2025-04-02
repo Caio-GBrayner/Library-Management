@@ -1,5 +1,4 @@
 from ..extensions import db
-from typing import List
 
 class User(db.Model):
     __tablename__ = "tb_user"
@@ -11,7 +10,7 @@ class User(db.Model):
     phone = db.Column(db.String(20))
     password = db.Column(db.String(100),nullable=False)
 
-    orders: List['Order'] = db.relationship("Order", back_populates="client", lazy=True)
+    orders = db.relationship("Order", back_populates="client")
 
     def to_dict(self):
         return {

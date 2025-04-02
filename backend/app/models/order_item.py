@@ -16,3 +16,23 @@ class OrderItem(db.Model):
     @property
     def subtotal(self):
         return self.quantity * self.price
+
+    def to_dict(self, include_product=False, include_order=False):
+        data = {
+            "order_id": self.order_id,
+            "product_id": self.product_id,
+            "quantity": self.quantity,
+            "price": self.price,
+            "subtotal": self.subtotal
+        }
+
+        if include_product and self.product:
+            data["product"] = self.product.to_dict()
+
+        if include_order and self.order:
+            data["order"] = {
+                "id": self.order.id,
+                "moment": self.order.moment.isoformat() + "Z" if self.order.moment else None
+            }
+
+        return data
