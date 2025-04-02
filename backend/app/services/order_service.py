@@ -1,5 +1,5 @@
 from ..extensions import db
-from ..models.order import Order
+from ..models import Order
 from exceptions.resource_not_found__exception import ResourceNotFound
 
 class OrderService:

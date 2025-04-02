@@ -1,5 +1,5 @@
 from ..extensions import db
-from ..models.category import Category
+from ..models import Category
 from .exceptions.resource_not_found__exception import ResourceNotFound
 
 
