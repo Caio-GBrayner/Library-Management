@@ -1,6 +1,6 @@
 import pytest
 from datetime import datetime
-from your_app import create_app
+from ...app import create_app
 from ..extensions import db
 from ..models import Order, OrderStatus, User, Payment, Book, Category, OrderItem
 

@@ -21,7 +21,8 @@ class OrderService:
         db.session.commit()
         return order
 
-    def update(order_id, order_data):
+    @staticmethod
+    def update(self, order_id, order_data):
         order = Order.query.get(order_id)
         if not order:
             raise ResourceNotFound(f"Order with id {order_id} not found")
